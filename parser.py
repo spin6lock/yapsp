@@ -48,14 +48,22 @@ def struct(lexer_obj):
     optional(lexer_obj, SPACE)
     token = lexer_obj.look_ahead()
     while token[0] != RIGHT_PARENTHESE:
-        new_field = field(lexer_obj)
-        element.append(new_field)
-        optional(lexer_obj, SPACE)
-        token = lexer_obj.look_ahead()
+        if token[0] == POINT:
+            expecting(lexer_obj, POINT)
+            new_struct = struct(lexer_obj)
+            element.append(new_struct)
+            optional(lexer_obj, SPACE)
+            token = lexer_obj.look_ahead()
+        else:
+            new_field = field(lexer_obj)
+            element.append(new_field)
+            optional(lexer_obj, SPACE)
+            token = lexer_obj.look_ahead()
     expecting(lexer_obj, RIGHT_PARENTHESE)
-    return {"name":struct_name, "field":element}
+    return {"type":"struct", "name":struct_name, "field":element}
 
 def sproto_file(lexer_obj):
+    total = {"type":"file"}
     all_structs = []
     token = lexer_obj.get_next_token()
     while token[0] != EOF:
@@ -65,6 +73,7 @@ def sproto_file(lexer_obj):
             element = struct(lexer_obj)
             all_structs.append(element)
             optional(lexer_obj, SPACE)
-            token = lexer_obj.look_ahead()
-    return all_structs
+            token = lexer_obj.get_next_token()
+    total["elements"] = all_structs
+    return total
 

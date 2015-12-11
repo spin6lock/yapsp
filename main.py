@@ -2,7 +2,7 @@ import pprint
 from lexer import Lexer
 from parser import sproto_file
 
-with open("array_type.sproto", "r") as fin:
+with open("sproto_example.sproto", "r") as fin:
     content = fin.read()
 
 lexer_obj = Lexer(content)
