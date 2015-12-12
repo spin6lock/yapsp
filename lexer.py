@@ -49,13 +49,17 @@ def lexer(content):
             #print COLON
             yield [COLON]
         else:
-            print BREAK
-            print content[i:]
-            break
+            raise Exception("unknown token:", content[i:])
+
+def filter_out_space(token_seq):
+    for token in token_seq:
+        if token[0] != SPACE:
+            yield token
 
 class Lexer(object):
     def __init__(self, content):
         token_seq = lexer(content)
+        token_seq = filter_out_space(token_seq)
         self.stash = []
         self.token_seq = token_seq
 
