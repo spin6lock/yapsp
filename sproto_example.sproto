@@ -16,3 +16,9 @@
 	person 0 : *Person
 }
 
+foobar 1 {
+    request Person
+    response {
+        ok 0 : boolean
+    }
+}
