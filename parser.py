@@ -26,23 +26,23 @@ def field(lexer_obj):
     elements = {}
     optional(lexer_obj, SPACE)
     word = expecting(lexer_obj, WORD)
-    elements["attribute_name"] = word
+    elements["name"] = word
     optional(lexer_obj, SPACE)
     number = expecting(lexer_obj, NUMBER)
-    elements["attribute_order"] = number
+    elements["id"] = number
     optional(lexer_obj, SPACE)
     expecting(lexer_obj, COLON)
     optional(lexer_obj, SPACE)
     is_star = optional(lexer_obj, STAR)
     if is_star:
-        elements["is_array"] = True
+        elements["array"] = True
     word = expecting(lexer_obj, WORD)
-    elements["attribute_type"] = word
+    elements["type"] = word
     return elements
 
-def struct(lexer_obj):
+def sproto_type(lexer_obj):
     element = []
-    struct_name = expecting(lexer_obj, WORD)
+    sproto_type_name = expecting(lexer_obj, WORD)
     optional(lexer_obj, SPACE)
     expecting(lexer_obj, LEFT_PARENTHESE)
     optional(lexer_obj, SPACE)
@@ -50,8 +50,8 @@ def struct(lexer_obj):
     while token[0] != RIGHT_PARENTHESE:
         if token[0] == POINT:
             expecting(lexer_obj, POINT)
-            new_struct = struct(lexer_obj)
-            element.append(new_struct)
+            new_sproto_type = sproto_type(lexer_obj)
+            element.append(new_sproto_type)
             optional(lexer_obj, SPACE)
             token = lexer_obj.look_ahead()
         else:
@@ -60,20 +60,20 @@ def struct(lexer_obj):
             optional(lexer_obj, SPACE)
             token = lexer_obj.look_ahead()
     expecting(lexer_obj, RIGHT_PARENTHESE)
-    return {"type":"struct", "name":struct_name, "field":element}
+    return {"type":"sproto_type", "name":sproto_type_name, "fields":element}
 
-def sproto_file(lexer_obj):
-    total = {"type":"file"}
-    all_structs = []
+def sproto_group(lexer_obj):
+    total = {"type":"group"}
+    all_sproto_types = []
     token = lexer_obj.get_next_token()
     while token[0] != EOF:
         if token[0] == SPACE:
             absort_space(lexer_obj)
         elif token[0] == POINT:
-            element = struct(lexer_obj)
-            all_structs.append(element)
+            element = sproto_type(lexer_obj)
+            all_sproto_types.append(element)
             optional(lexer_obj, SPACE)
             token = lexer_obj.get_next_token()
-    total["elements"] = all_structs
+    total["type"] = all_sproto_types
     return total
 
