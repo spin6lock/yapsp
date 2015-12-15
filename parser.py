@@ -88,7 +88,6 @@ def sproto_group(lexer_obj):
     all_sproto_types = []
     protocols = []
     token = lexer_obj.look_ahead()
-    #import ipdb; ipdb.set_trace()
     while token[0] != EOF:
         if token[0] == SPACE:
             absort_space(lexer_obj)
